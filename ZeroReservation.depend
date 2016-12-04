@@ -1,0 +1,24 @@
+# depslib dependency file v1.0
+1480861171 source:c:\users\zero-inside\documents\asd\tubes\zeroreservation\zeroreservation\main.cpp
+	<iostream>
+	"zeroReservation.h"
+	<conio.h>
+
+1480861921 c:\users\zero-inside\documents\asd\tubes\zeroreservation\zeroreservation\zeroreservation.h
+	<iostream>
+	<string.h>
+	<windows.h>
+	<conio.h>
+
+1480861937 source:c:\users\zero-inside\documents\asd\tubes\zeroreservation\zeroreservation\zeroreservation.cpp
+	"zeroReservation.h"
+	<cstdlib>
+
+1480403502 source:c:\users\zero-inside\documents\asd\tubes\zeroreservation\zeroreservation\list_relasi.cpp
+
+1480703675 c:\users\zero-inside\documents\asd\tubes\zeroreservation\zeroreservation\menu.h
+	"zeroReservation.h"
+
+1480693480 source:c:\users\zero-inside\documents\asd\tubes\zeroreservation\zeroreservation\menu.cpp
+	"menu.h"
+
