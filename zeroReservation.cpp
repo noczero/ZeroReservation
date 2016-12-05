@@ -23,6 +23,10 @@ void createListRelasi(listRelasi &l) {
     l.last = NULL;
 }
 
+void createListRelasi2(listRelasi2 &l) {
+	l.first = NULL;
+}
+
 /*=====  End of Create List  ======*/
 
 /*==================================
@@ -45,7 +49,10 @@ addressPlane alokasiPlane(dataPlane x){
 	p->info = x;
 	p->next = NULL;
 	p->prev = NULL;
+    p->pass = NULL;
 
+
+    createListRelasi2(p->child);
 	return p;
 }
 
@@ -65,6 +72,14 @@ addressRelasi alokasiRelasi(addressPlane c) {
     next(p) = NULL;
 
     return p;
+}
+
+addressRelasi2 alokasiRelasi2(addressPassenger c){
+	addressRelasi2 p = new elmListRelasi2;
+	p->info = c;
+	p->next = NULL;
+
+	return p;
 }
 /*=====  End of Alocattion  ======*/
 
@@ -296,7 +311,7 @@ void insertFirst(listRelasi &l, addressRelasi p){
         p->next = l.first;
 
         l.first = p;
-          l.first->prev = p;
+         l.first->prev = p;
     }
 }
 void insertLast(listRelasi &l, addressRelasi p){
@@ -307,6 +322,27 @@ void insertLast(listRelasi &l, addressRelasi p){
 		p->prev = l.last;
 		l.last->next = p;
 		l.last = p;
+	}
+}
+
+/*----------  #Relasi2  ----------*/
+void insertFirstR2(listRelasi2 &l, addressRelasi2 p){
+    if (l.first == NULL) {
+        l.first = p;
+    } else {
+        p->next = l.first;
+        l.first = p;
+    }
+}
+void insertLastR2(listRelasi2 &l, addressRelasi2 p){
+	if (l.first == NULL) {
+		l.first = p;
+	} else {
+		addressRelasi2 q = l.first;
+        while (q->next != NULL) {
+            q = q->next;
+        }
+        q->next = p;
 	}
 }
 /*=====  End of Insert  ======*/
@@ -829,11 +865,12 @@ void addJadwaltoPlane(schedules &sch , plane &pln ) {
 
         string idPlane , idSchedules;
         char pilih;
+             system("CLS");
        	cout << endl;
 		cout << "========================================" << endl;
 		cout <<	"=            Zero Reservation          =" << endl;
 		cout << "========================================" << endl;
-        system("CLS");
+
         do {
             cout << "Input ID Jadwal \t:"; cin >> idSchedules;
             cout << "Input ID Pesawat\t: "; cin >> idPlane;
@@ -1043,7 +1080,8 @@ void menuAdmin(schedules &sch , plane &pln , passenger &pas) {
 	                	getch();
 	                break;
 	                case 7 :
-	                	//Pesawat -- Pessanger;
+	                	printplane_passenger(pln);
+	                	getch();
 	                break;
 	                case 99:
 	                    mainMenu(sch , pln , pas);
@@ -1087,7 +1125,8 @@ void menuPassanger(schedules &sch , plane &pln , passenger &pas) {
         	cout << "========================================" << endl;
             cout << " 1. Memesan Penerbangan" << endl;
             cout << " 2. Melihat Pemesanan " << endl;
-            cout << " 3. Edit Profile" << endl;
+            cout << " 3. Membatalkan Pemesanan " << endl;
+            cout << " 4. Edit Profile" << endl;
             cout << " 99. Back" << endl;
             cout << "\nPilih Menu : " ;
             cin >> pilih;
@@ -1104,15 +1143,18 @@ void menuPassanger(schedules &sch , plane &pln , passenger &pas) {
                 switch (pilih) {
                 case 1 :
                     system("CLS");
-                    addPassengertoPlane(pln , p);
+                    addpassto_plane(pln , p);
                 break;
                 case 2 :
                     printPesanan(pas , p);
                 break;
                 case 3 :
-                    //editPessanger();
+                    disconnect(p);
+                break;
+                case 4 :
                 break;
                 case 99 :
+
                 break;
                 break;
                         default :
@@ -1474,7 +1516,6 @@ void addPassengertoPlane(plane &pln , addressPassenger &pas ) {
 
 	pilihID:
 
-	//do {
 	cout << "Masukkan ID Pesawat : " ;
 	cin >> planeID;
 
@@ -1486,13 +1527,11 @@ void addPassengertoPlane(plane &pln , addressPassenger &pas ) {
 		}
 
     connect( p , pas);
+    connectPlanetoPas( p , pas);
 
 	cout << "\nSuccess... ";
 	cout << p->info.planeID << " -- " << pas->info.passengerID << endl;
 	cout << " Pesanan Berhasil...";
-	//	cout << "\n Pesan lagi ? (y/n)" ;
-	//cin >> pilih;
-	//} while (pilih != 'n' && pilih != 'N');
 	getch();
 }
 
@@ -1500,6 +1539,145 @@ void connect(addressPlane p , addressPassenger q){
 	q->plane = p;
 }
 
+void connectPlanetoPas(addressPlane p , addressPassenger q) {
+	p->pass = q;
+}
+
 void disconnect(addressPassenger p) {
 	p->plane = NULL;
 }
+
+
+void printPassangerandPlane(passenger l) {
+	addressPassenger p;
+	addressPlane q;
+
+
+	if ( l.first == NULL ){
+		cout << "-- No Passenger --" ;
+	} else {
+		p = l.first;
+		cout << " == Passanger Data ==" << endl;
+		while (p != NULL) {
+			cout << " > ID Passenger  : " << p->info.passengerID << endl;
+			cout << " > Nama \t : " << p->info.name << endl;
+			cout << " > Gender \t : " << p->info.gender << endl;
+			cout << " > Age \t\t : " << p->info.age << endl;
+			cout << " > Address \t : " << p->info.address << endl;
+			cout << "======================================" << endl;
+			q = p->plane;
+
+				if (q == NULL) {
+					cout << " -- No Plane on this passenger " << endl;
+				} else {
+
+					while ( q != NULL) {
+						cout << endl;
+			        	cout << "----------------------------" << endl;
+			            cout << "Planes Data " << endl
+			                 << "ID \t: " << q->info.planeID << endl
+			                << "Type \t: " << q->info.type << endl
+			                << "Route \t: " << q->info.route << endl
+			                << "Price \t: " << q->info.price << endl
+			                << "Capacity: " << q->info.capacity << endl;
+
+						q = q->next;
+					}
+
+
+				}
+
+
+            cout << endl;
+			p = p->next;
+		}
+	}
+
+}
+
+void printplane_passenger(plane l) {
+
+
+    if (l.first == NULL) {
+        cout << " -- List Pesawat Kosong --" << endl;
+    } else {
+        addressPlane p = l.first;
+        addressPassenger q;
+        while (p != NULL) {
+            cout << endl;
+            cout << "===========================" << endl;
+            cout << "Planes Data " << endl
+                << "ID \t: " << p->info.planeID << endl
+                << "Type \t: " << p->info.type << endl
+                << "Route \t: " << p->info.route << endl
+                << "Price \t: " << p->info.price << endl
+                << "Capacity: " << p->info.capacity << endl;
+
+            if (p->child.first == NULL) {
+            	cout << "\n \t-- No Passenger on " << p->info.planeID << " --" << endl;
+            } else {
+
+            	printInfoRelasi2(p->child);
+            }
+
+            p = p->next;
+        }
+
+    }
+}
+
+
+void addpassto_plane(plane &l , addressPassenger psgr) {
+       	cout << endl;
+		cout << "========================================" << endl;
+		cout <<	"=            Zero Reservation          =" << endl;
+		cout << "========================================" << endl;
+
+		if (l.first == NULL) {
+			cout << " -- no plane --" << endl;
+		} else {
+			string ID;
+			cout << " Masukan ID Pesawat yang ingin dipesan : " << endl;
+			cin >> ID;
+
+			addressPlane p = findElmPlane( l , ID);
+
+			if (p == NULL) {
+				cout << " -- Pesawat tidak ditemukan --" << endl;
+			} else {
+				addressRelasi2 r;
+				r = alokasiRelasi2(psgr);
+
+				insertFirstR2(p->child , r);
+
+				cout << " -- Success.. " << endl;
+				cout <<"Selamat.. " << psgr->info.name << ", Pesawat dengan ID " << p->info.planeID << " berhasil dipesan " << endl;
+				getch();
+			}
+		}
+}
+
+
+void printInfoRelasi2(listRelasi2 l){
+	addressRelasi2 p = l.first;
+	cout << " \t -- Passenger --" << endl;
+	int i = 1;
+
+	while ( p != NULL) {
+			cout << endl;
+        	cout << "----------------------------" << endl;
+            cout << " \t Passanger Data " << i << endl
+                << "\t > ID      : " << p->info->info.passengerID << endl
+                << "\t > Name    : " << p->info->info.name << endl
+                << "\t > Age     : " << p->info->info.age << endl
+                << "\t > Gender  : " << p->info->info.gender << endl
+                << "\t > Address : " << p->info->info.address << endl;
+            p = p->next;
+            i++;
+
+	}
+
+}
+
+
+

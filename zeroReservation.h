@@ -33,7 +33,9 @@
  typedef struct elmPlane *addressPlane;
  typedef struct elmSchedules *addressSchedules;
  typedef struct elmPassenger *addressPassenger;
-typedef struct elmListRelasi *addressRelasi;
+ typedef struct elmListRelasi *addressRelasi;
+ typedef struct elmListRelasi2 *addressRelasi2;
+
 /*----------  Data Type Declaration  ----------*/
  struct dataPlane {
  	string planeID;
@@ -84,6 +86,9 @@ struct passenger
 	addressPassenger first;
 };
 
+struct listRelasi2{
+	addressRelasi2 first;
+};
 
 /*----------  Element of Multi Linked List  ----------*/
 
@@ -98,7 +103,8 @@ struct elmSchedules
 struct elmPlane
 {
 	dataPlane info;
-//	passenger passengerList;
+	addressPassenger pass;
+	listRelasi2 child;
 	addressPlane next;
 	addressPlane prev;
 };
@@ -116,6 +122,10 @@ struct elmListRelasi {
     addressPlane info ;
 };
 
+struct elmListRelasi2 {
+	addressRelasi2 next;
+	addressPassenger info;
+};
 
 
 
@@ -129,8 +139,7 @@ void createListPlane(plane &l);
 void createListSchedules(schedules &l);
 void createListPassenger(passenger &l);
 void createListRelasi(listRelasi &l);
-
-
+void createListRelasi2(listRelasi2 &l);
 /*=====  End of Create List  ======*/
 
 /*==================================
@@ -139,7 +148,8 @@ void createListRelasi(listRelasi &l);
 addressSchedules alokasiSch(dataSchedules x);
 addressPlane alokasiPlane(dataPlane x);
 addressPassenger alokasiPassenger(dataPassenger x);
-addressRelasi alokasiRelasi(addressPlane p);
+addressRelasi alokasiRelasi(addressPlane c);
+addressRelasi2 alokasiRelasi2(addressPassenger c);
 /*=====  End of Alocattion  ======*/
 
 
@@ -165,7 +175,8 @@ void insertLastPas(passenger &l , addressPassenger p);
 /*----------  Relasi  ----------*/
 void insertFirst(listRelasi &l, addressRelasi p);
 void insertLast(listRelasi &l, addressRelasi p);
-
+void insertFirstR2(listRelasi2 &l, addressRelasi2 p);
+void insertLastR2(listRelasi2 &l, addressRelasi2 p);
 /*=====  End of Insert  ======*/
 /*----------  add  ----------*/
 void addJadwaltoPlane(schedules &sch , plane &pln);
@@ -227,7 +238,11 @@ void printAll(schedules l);
 void printSemua(schedules l);
 void printSch_Pln(schedules l);
 void printPesanan(passenger l , addressPassenger p);
+void printPassangerandPlane(passenger l);
+void printplane_passenger(plane l);
 void printInfoRelasi(listRelasi l);
+void printInfoRelasi2(listRelasi2 l);
+
 /*=====  End of Print  ======*/
 
 
@@ -253,9 +268,18 @@ bool checkPassengerID(passenger l , string ID);
 ================================*/
 
 void connect(addressPlane p , addressPassenger q);
+void connectPlanetoPas(addressPlane p , addressPassenger q);
 void disconnect(addressPassenger p);
 
 /*=====  End of #connect  ======*/
+
+/*================================
+=            #addpass            =
+================================*/
+
+void addpassto_plane(plane &l , addressPassenger psgr);
+
+/*=====  End of #addpass  ======*/
 
 
 #endif // ZERORESERVATION_H_INCLUDED

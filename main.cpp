@@ -86,13 +86,23 @@ int main()
     z.address = "Bandung";
     psgr = alokasiPassenger(z);
     insertLastPas(passengerList , psgr);
-    
+
     z.passengerID = "MR-03";
     z.age = 22;
     z.gender = "Male";
     z.name = "Boy";
     z.username = "user3";
     z.password = "3";
+    z.address = "Bandung";
+    psgr = alokasiPassenger(z);
+    insertFirstPas(passengerList , psgr);
+
+        z.passengerID = "a";
+    z.age = 22;
+    z.gender = "Male";
+    z.name = "Boy";
+    z.username = "a";
+    z.password = "a";
     z.address = "Bandung";
     psgr = alokasiPassenger(z);
     insertFirstPas(passengerList , psgr);
