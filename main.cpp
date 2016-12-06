@@ -18,6 +18,11 @@ int main()
     createListSchedules(schList);
     addressSchedules sch;
 
+   // createListPassenger(passengerList);
+    //createListPlane(planeList);
+
+    /*----------  Dummies  ----------*/
+
     x.date = "11/25/2016";
     x.schID = "ZR-01";
     sch = alokasiSch(x);

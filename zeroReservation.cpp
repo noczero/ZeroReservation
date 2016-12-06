@@ -49,9 +49,6 @@ addressPlane alokasiPlane(dataPlane x){
 	p->info = x;
 	p->next = NULL;
 	p->prev = NULL;
-    p->pass = NULL;
-
-
     createListRelasi2(p->child);
 	return p;
 }
@@ -114,14 +111,14 @@ void addDataSchedules(schedules l ,dataSchedules &x) {
 	cout << "========================================" << endl;
 	cout << "# Input Schedules Data  " << endl;
 	pilihbalik:
-	cout << "> Schedules ID \t :" ; cin >> x.schID;
+	cout << "> Schedules ID          : " ; cin >> x.schID;
 
 	if (checkSchedulesID( l , x.schID)) {
 			cout << " -- ID Already exist -- ";
 			cout << "masukkan ID lagi" << endl;
 			goto pilihbalik;
 	}
-	cout << "> Date (DD/MM/YYYY) \t :"; cin >> x.date;
+	cout << "> Date (DD/MM/YYYY)     : "; cin >> x.date;
 		if(cin.fail())
         {
           cin.clear();
@@ -162,7 +159,7 @@ void addDataPlane(plane l , dataPlane &x) {
 	cout << "========================================" << endl;
 	cout << "# Input Planes Data  " << endl;
 	pilihbalikID:
-	cout << "> Plane ID \t :" ; cin >> x.planeID;
+	cout << "> Plane ID  :" ; cin >> x.planeID;
 
 	if (checkPlaneID( l , x.planeID)) {
 			cout << " -- ID Already exist -- ";
@@ -170,10 +167,10 @@ void addDataPlane(plane l , dataPlane &x) {
 			goto pilihbalikID;
 	}
 
-	cout << "> Type \t :"; cin >> x.type;
-	cout << "> route \t :"; cin >> x.route;
+	cout << "> Type     :"; cin >> x.type;
+	cout << "> Route    :"; cin >> x.route;
 		pilihbalik:
-	cout << "> price \t :"; cin >> x.price;
+	cout << "> Price    :"; cin >> x.price;
 		 if(cin.fail())
          {
            cin.clear();
@@ -182,7 +179,7 @@ void addDataPlane(plane l , dataPlane &x) {
           goto pilihbalik;
          }
          pilihbalik2:
-	cout << "> capacity \t :"; cin >> x.capacity;
+	cout << "> Capacity :"; cin >> x.capacity;
 
 	if(cin.fail())
         {
@@ -257,7 +254,7 @@ void addDataPassenger(passenger l , dataPassenger &x) {
 	cout << "========================================" << endl;
 	cout << "# Input Passenger Data" << endl;
 	pilihbalikID:
-	cout << "> passenger ID \t : " ; cin >> x.passengerID;
+	cout << "> Passenger ID  : " ; cin >> x.passengerID;
 
 	if (checkPassengerID( l , x.passengerID)) {
 			cout << " -- ID Already exist -- ";
@@ -265,10 +262,11 @@ void addDataPassenger(passenger l , dataPassenger &x) {
 			goto pilihbalikID;
 	}
 
-	cout << "> name \t : "; cin >> x.name;
-	cout << "> password \t  :"; cin >> x.password;
+	cout << "> Name          : "; cin >> x.name;
+	cout << "> Username      : "; cin >>x.username;
+	cout << "> Password      :"; cin >> x.password;
 	pilihbalik:
-	cout << "> age \t : "; cin >> x.age;
+	cout << "> Age           : "; cin >> x.age;
     if(cin.fail())
         {
           cin.clear();
@@ -276,8 +274,8 @@ void addDataPassenger(passenger l , dataPassenger &x) {
           cout << "Error, Input tipe datanya salah.";
         goto pilihbalik;
         }
-	cout << "> gender \t : "; cin >> x.gender;
-	cout << "> address \t : "; cin >> x.address;
+	cout << "> Gender       : "; cin >> x.gender;
+	cout << "> Address      : "; cin >> x.address;
 
 }
 void insertFirstPas(passenger &l, addressPassenger p){
@@ -347,7 +345,89 @@ void insertLastR2(listRelasi2 &l, addressRelasi2 p){
 }
 /*=====  End of Insert  ======*/
 
-/*----------  add  ---------- */
+/*----------  add  to relasi ---------- */
+void addJadwaltoPlane(schedules &sch , plane &pln ) {
+        addressSchedules p;
+        addressPlane q;
+        addressRelasi r,s;
+
+        string idPlane , idSchedules;
+        char pilih;
+             system("CLS");
+       	cout << endl;
+		cout << "========================================" << endl;
+		cout <<	"=            Zero Reservation          =" << endl;
+		cout << "========================================" << endl;
+
+        do {
+            cout << "Input ID Jadwal \t:"; cin >> idSchedules;
+            cout << "Input ID Pesawat\t: "; cin >> idPlane;
+
+            p = findElmSchedules( sch , idSchedules);
+            if (p == NULL) {
+                cout << "ID Jadwal tidak ditemukan" << endl;
+            } else {
+                q = findElmPlane( pln , idPlane);
+                if (q == NULL) {
+                    cout << "ID Pesawat tidak ditemukan" << endl;
+                } else {
+                    r = alokasiRelasi(q);
+                    insertFirst(p->child , r);
+                    cout << "\nSuccess... ";
+                    cout << info(p).schID << " --- " << info(q).planeID << endl;
+                }
+
+                if (p == NULL && q == NULL)
+                	cout << "\nFailed...";
+            }
+           	cout << "Lakukan relasi data lagi ? (y/n) ";
+			cin >> pilih;
+        } while (pilih != 'n' && pilih != 'N');
+}
+
+void pesanPenerbangan(plane &l , addressPassenger psgr) {
+       	cout << endl;
+		cout << "========================================" << endl;
+		cout <<	"=            Zero Reservation          =" << endl;
+		cout << "========================================" << endl;
+
+		if (l.first == NULL) {
+			cout << " -- no plane --" << endl;
+		} else {
+
+			string ID;
+			cout << " Masukan ID Pesawat yang ingin dipesan : " ;
+			cin >> ID;
+
+			// if (checkRelasi2(l , ID)) {
+			// 	cout << " -- ID Already Existing -- " << endl;
+			// 	getch();
+			// }
+				addressPlane p = findElmPlane( l , ID);
+
+			cout << checkRelasi2(p->child , ID);
+			if (checkRelasi2(p->child, ID)) {
+				cout << " -- Anda sudah memesan " << p->info.planeID << " -- "<< endl;
+
+			} else {
+				if (p == NULL) {
+					cout << " -- Pesawat tidak ditemukan --" << endl;
+					getch();
+				} else {
+					addressRelasi2 r;
+					r = alokasiRelasi2(psgr);
+
+					p->info.capacity--;
+					insertFirstR2(p->child , r);
+
+					cout << " -- Success.. " << endl;
+					cout <<"Selamat.. " << psgr->info.name << ", Pesawat dengan ID " << p->info.planeID << " berhasil dipesan " << endl;
+					getch();
+				}
+			}
+		}
+}
+
 /*=====  End of add  ======*/
 
 
@@ -410,44 +490,259 @@ void deleteSchbyID(schedules &l) {
 	cout <<	"=            Zero Reservation          =" << endl;
 	cout << "========================================" << endl;
 
+    if (l.first == NULL) {
+        cout << " -- Tidak bisa menghapus List.. \n List Schedules kosong... --";
+    } else {
+        char pilih;
+        do {
+            cout << endl;
+            cout << "Masukkan ID yang akan didelete : " ;
+            cin >> id;
+
+            p = findElmSchedules(l , id);
+
+            if (p == NULL) {
+                cout << "-- ID Jadwal tidak ditemukan --" << endl;
+            } else {
+                cout << info(p).schID;
+                if (next(first(l)) == NULL) {
+                    first(l) = NULL;
+                    last(l) = NULL;
+
+                    delete p;
+                } else {
+                    if (p == first(l) && next(p) != NULL ){
+                        deleteFirstSch(l);
+                    } else    if (next(p) == NULL && (prev(p) != NULL)) {
+                        deleteLastSch(l);
+                    }
+                    else {
+                        addressSchedules q = p->prev;
+                        q->next = p->next;
+                        p->next->prev = q;
+                        p->next = NULL;
+                        p->prev = NULL;
+
+                        delete p;
+                    }
+                }
+                cout << " Berhasil dihapus..." << endl;
+            }
+            cout << "Hapus lagi ? (y/n) ";
+            cin >> pilih;
+        } while (pilih != 'n' && pilih != 'N');
+    }
+}
+
+
+void deleteRelasibyID(schedules &l){
+     addressSchedules p;
+     addressRelasi q , r;
+
+    string id;
+    system("CLS");
+	cout << "========================================" << endl;
+	cout <<	"=            Zero Reservation          =" << endl;
+	cout << "========================================" << endl;
+
+	if (l.first == NULL){
+        cout << " -- Tidak bisa menghapus List.. \n List Schedules kosong... --" ;
+	} else {
+        char pilih;
+        do {
+            cout << endl;
+            pilihbalik:
+            cout << "Masukkan ID jadwal yang akan didelete : " ;
+            cin >> id;
+
+            p = findElmSchedules(l , id);
+
+            if ( p == NULL) {
+                cout << "-- ID Tidak ada -- " << endl;
+                goto pilihbalik;
+            }
+
+            cout << "Masukkan ID Pesawawt yang akan didelete : ";
+            string planeID;
+            cin >> planeID;
+
+            r = findElmRelasi(p->child , planeID);
+            //q = p->child.first;
+
+            if (r == NULL) {
+                cout << "-- ID Jadwal tidak ditemukan --" << endl;
+            } else {
+                cout << r->info->info.planeID;
+                if (r->next == NULL) {
+                    p->child.first= NULL;
+                    p->child.last = NULL;
+
+                   // delete p;
+                } else {
+                    if (r == p->child.first && r->next != NULL ){
+                        deleteFirstRelasi(p->child);
+                    } else    if (next(r) == NULL && (prev(r) != NULL)) {
+                        deleteLastRelasi(p->child);
+                    }
+                    else {
+                        addressRelasi q = r->prev;
+                        q->next = r->next;
+                        r->next->prev = q;
+                        r->next = NULL;
+                        r->prev = NULL;
+
+                        delete r;
+                    }
+                }
+                cout << " Berhasil dihapus..." << endl;
+            }
+            cout << "Hapus lagi ? (y/n) ";
+            cin >> pilih;
+        } while (pilih != 'n' && pilih != 'N');
+	}
+}
+
+void deleteRelasi2byID(plane &l){
+     addressPlane p;
+     addressRelasi2 q , r;
+
+    string id;
+    system("CLS");
+    cout << endl;
+	cout << "========================================" << endl;
+	cout <<	"=            Zero Reservation          =" << endl;
+	cout << "========================================" << endl;
+
    	char pilih;
-   	do {
-	   	cout << endl;
-	   	cout << "Masukkan ID yang akan didelete : " ;
-	    cin >> id;
+   	if (l.first == NULL) {
+        cout << "  -- Tidak bisa menghapus List.. \n List Pesawat kosong... --" << endl;
+   	} else {
+        do {
+            cout << endl;
+            pilihbalik:
+            cout << "Masukkan ID Pesawat yang akan dibatalkan : " ;
+            cin >> id;
 
-	    p = findElmSchedules(l , id);
+            p = findElmPlane(l , id);
 
-	    if (p == NULL) {
-	        cout << "-- ID Jadwal tidak ditemukan --" << endl;
-	    } else {
-	        cout << info(p).schID;
-	        if (next(first(l)) == NULL) {
-	            first(l) = NULL;
-	            last(l) = NULL;
+            if ( p == NULL) {
+                cout << "-- ID Tidak ada -- " << endl;
+                goto pilihbalik;
+            }
 
-	            delete p;
-	        } else {
-	         	if (p == first(l) && next(p) != NULL ){
-	                deleteFirstSch(l);
-	            } else    if (next(p) == NULL && (prev(p) != NULL)) {
-	                deleteLastSch(l);
-	            }
-	            else {
-	                addressSchedules q = p->prev;
-	                q->next = p->next;
-	                p->next->prev = q;
-	                p->next = NULL;
-	                p->prev = NULL;
+            cout << "Masukkan ID Penumpang yang akan dibatalkan : ";
+            string passID;
+            cin >> passID;
 
-	                delete p;
-	            }
-	        }
-	        cout << " Berhasil dihapus..." << endl;
-	    }
-	    cout << "Hapus lagi ? (y/n) ";
-	    cin >> pilih;
-	} while (pilih != 'n' && pilih != 'N');
+            r = findElmRelasi2(p->child , passID);
+            //q = p->child.first;
+
+            if (r == NULL) {
+                cout << "-- ID Penumpang tidak ditemukan --" << endl;
+            } else {
+                cout << r->info->info.passengerID;
+                if (r->next == NULL) {
+                    p->child.first= NULL;
+
+                } else {
+                    if (r == p->child.first && r->next != NULL ){
+                        deleteFirstR2(p->child);
+                    } else    if (next(r) == NULL) {
+                        deleteLastR2(p->child);
+                    }
+                    else {
+                        addressRelasi2 q = p->child.first;
+
+                        while (q->next != r) {
+                            q = q->next;
+                        }
+                        q->next = r->next;
+                        r->next = NULL;
+                        delete r;
+                    }
+                }
+                cout << " Berhasil dihapus..." << endl;
+            }
+            cout << "Hapus lagi ? (y/n) ";
+            cin >> pilih;
+        } while (pilih != 'n' && pilih != 'N');
+   	}
+}
+
+void deleteFirstRelasi(listRelasi &l) {
+     addressRelasi p;
+     if(first(l) == NULL)
+    {
+        cout << "List sudah kosong" << endl;
+    }
+    else
+    {
+        p = first(l);
+        if ((first(l) != NULL)&&(next(first(l))==NULL))
+        {
+            first(l) = NULL;
+            last(l) = NULL;
+            delete p;
+        }
+        else
+        {
+            prev(next(p)) = NULL;
+            first(l) = next(p);
+            next(p) = NULL;
+            delete p;
+        }
+    }
+}
+
+void deleteLastRelasi(listRelasi &l){
+    addressRelasi p;
+    if (first(l) != NULL) {
+         if (first(l) == last(l)) {
+            first(l) == NULL;
+            last(l) == NULL;
+         } else {
+            p = last(l);
+            last(l) = last(l)->prev;
+            prev(p) = NULL;
+            last(l)->next = NULL;
+             delete p;
+         }
+
+    } else {
+        cout << "List sudah kosong" << endl;
+    }
+}
+
+void deleteFirstR2(listRelasi2 &l){
+    if (l.first != NULL) {
+        addressRelasi2 P = first(l);
+        if (next(P) == NULL){
+            first(l) = NULL;
+        } else {
+            first(l) = next(P);
+            next(P) = NULL;
+        }
+    	delete P;
+    } else {
+        cout << "List sudah kosong" << endl;
+    }
+}
+
+void deleteLastR2(listRelasi2 &l) {
+    if (l.first != NULL ){
+        addressRelasi2 Q = first(l);
+        if (Q->next == NULL){
+            first(l) = NULL;
+        } else {
+        	addressRelasi2 P;
+            while ((Q->next)->next != NULL){
+                Q = Q->next;
+            }
+            P = Q->next;
+            Q->next = NULL;
+            delete P;
+        }
+    }
 }
 
 void deleteSchMain(schedules &l);
@@ -507,41 +802,44 @@ void deletePlanebyID(plane &l){
 	cout << "========================================" << endl;
 
    	char pilih;
+    if ( l.first == NULL) {
+        cout << "  -- Tidak bisa menghapus List.. \n List Pesawat kosong... -- " << endl;
+    } else {
+        do {
+            cout << "Masukkan ID Pesawat yang akan didelete : " ;
+            cin >> id;
 
-   	do {
-	    cout << "Masukkan ID Pesawat yang akan didelete : " ;
-	    cin >> id;
+            p = findElmPlane(l , id);
 
-	    p = findElmPlane(l , id);
+            if (p == NULL) {
+                cout << " -- ID Pesawat tidak ditemukan -- " << endl;
+            } else {
+                cout << info(p).planeID;
+                if (next(first(l)) == NULL) {
+                    first(l) = NULL;
+                    last(l) = NULL;
 
-	    if (p == NULL) {
-	        cout << " -- ID Pesawat tidak ditemukan -- " << endl;
-	    } else {
-	        cout << info(p).planeID;
-	        if (next(first(l)) == NULL) {
-	            first(l) = NULL;
-	            last(l) = NULL;
-
-	            delete p;
-	        } else {
-	            if (next(p) == NULL && (prev(p) != NULL)) {
-	                deleteLastPlane(l);
-	            } else  if (p == first(l) && next(p) != NULL ){
-	                deleteFirstPlane(l);
-	            } else {
-	                addressPlane q = p->prev;
-	                q->next = p->next;
-	                p->next->prev = q;
-	                p->next = NULL;
-	                p->prev = NULL;
-	                delete p;
-	            }
-	        }
-	     cout << " Berhasil dihapus..." << endl;
-	    }
-	    cout << "Hapus lagi ? (y/n) " ;
-	    cin >> pilih;
-	} while (pilih != 'n' && pilih != 'N');
+                    delete p;
+                } else {
+                     if (p == first(l) && next(p) != NULL ){
+                        deleteFirstPlane(l);
+                    } else if (next(p) == l.last) {
+                        deleteLastPlane(l);
+                    } else {
+                        addressPlane q = p->prev;
+                        q->next = p->next;
+                        p->next->prev = q;
+                        p->next = NULL;
+                        p->prev = NULL;
+                        delete p;
+                    }
+                }
+             cout << " Berhasil dihapus..." << endl;
+            }
+            cout << "Hapus lagi ? (y/n) " ;
+            cin >> pilih;
+        } while (pilih != 'n' && pilih != 'N');
+    }
 }
 void deletePlaneMain(plane &l);
 
@@ -584,44 +882,49 @@ void deletePasbyID(passenger &l){
 	cout <<	"=            Zero Reservation          =" << endl;
 	cout << "========================================" << endl;
 
-   	char pilih;
-   	do {
-	    cout << "Masukkan ID Passanger yang akan didelete : " << endl;
-	    cin >> id;
+	if (l.first == NULL) {
+        cout << "-- Tidak ada List Passenger -- ";
+	} else {
+        char pilih;
+        do {
+            cout << "Masukkan ID Passanger yang akan didelete : " << endl;
+            cin >> id;
 
-	     p = findElmPassenger(l , id);
+             p = findElmPassenger(l , id);
 
-	    if (p == NULL) {
-	        cout << " -- ID Passenger tidak ditemukan -- " << endl;
-	    } else {
-	        cout << info(p).passengerID;
-	        if (next(first(l)) == NULL) {
-	            first(l) = NULL;
+            if (p == NULL) {
+                cout << " -- ID Passenger tidak ditemukan -- " << endl;
+            } else {
+                cout << info(p).passengerID;
+                if (next(first(l)) == NULL) {
+                    first(l) = NULL;
 
-	            delete p;
-	        } else {
-	            if (next(p) == NULL) {
-	                deleteLastPas(l);
-	            } else  if (p == first(l) && next(p) != NULL ){
-	                deleteFirstPas(l);
-	            } else {
-	                addressPassenger q = l.first;
+                    delete p;
+                } else {
+                    if (next(p) == NULL) {
+                        deleteLastPas(l);
+                    } else  if (p == first(l) && next(p) != NULL ){
+                        deleteFirstPas(l);
+                    } else {
+                        addressPassenger q = l.first;
 
-	                while(next(q) != p) {
-	                    q = next(q);
-	                }
+                        while(next(q) != p) {
+                            q = next(q);
+                        }
 
-	                next(q) = next(p);
-	                next(p) = NULL;
-	                delete p;
-	            }
-	        }
-	        cout << " Berhasil dihapus..." << endl;
-	    }
+                        next(q) = next(p);
+                        next(p) = NULL;
+                        delete p;
+                    }
+                }
+                cout << " Berhasil dihapus..." << endl;
+            }
 
-	    cout << "Hapus lagi? (y/n) ";
-	    cin >> pilih;
-	} while (pilih != 'N' && pilih != 'n');
+            cout << "Hapus lagi? (y/n) ";
+            cin >> pilih;
+        } while (pilih != 'N' && pilih != 'n');
+
+	}
 }
 void deletePasMain(passenger &l);
 
@@ -708,6 +1011,24 @@ addressRelasi findElmRelasi(listRelasi l , string  planeID) {
 
 }
 
+addressRelasi2 findElmRelasi2(listRelasi2 l , string  passID) {
+    if (l.first == NULL) {
+        return NULL;
+    } else {
+        addressRelasi2 p = l.first;
+        while (p != NULL && p->info->info.passengerID != passID) {
+            p = p->next;
+        }
+
+        if (p == NULL) {
+            return NULL;
+        } else {
+            return p;
+        }
+    }
+
+}
+
 
 /*=====  End of Find & Searching  ======*/
 
@@ -715,9 +1036,34 @@ addressRelasi findElmRelasi(listRelasi l , string  planeID) {
 =            #Print            =
 =============================*/
 
-void printPesanan(passenger l , addressPassenger p){
+void printInfoRelasi2(listRelasi2 l){
+	addressRelasi2 p = l.first;
+	cout << " \t -- Passenger --" << endl;
+	int i = 1;
+
+	while ( p != NULL) {
+			cout << endl;
+        	cout << "----------------------------" << endl;
+            cout << " \t Passanger Data " << i << endl
+                << "\t > ID      : " << p->info->info.passengerID << endl
+                << "\t > Name    : " << p->info->info.name << endl
+                << "\t > Age     : " << p->info->info.age << endl
+                << "\t > Gender  : " << p->info->info.gender << endl
+                << "\t > Address : " << p->info->info.address << endl;
+            p = p->next;
+            i++;
+
+	}
+
+}
+
+void printPesanan(plane l , addressPassenger p){
 	//addressPassenger p = l.first;
+	system("CLS");
 	cout << endl;
+    cout << "========================================" << endl;
+    cout <<	"=            Zero Reservation          =" << endl;
+    cout << "========================================" << endl;
 	cout << " === Passenger ID === " << endl;
 	cout << " > ID Passenger  : " << p->info.passengerID << endl;
 	cout << " > Nama \t : " << p->info.name << endl;
@@ -725,22 +1071,49 @@ void printPesanan(passenger l , addressPassenger p){
 	cout << " > Age \t\t : " << p->info.age << endl;
 	cout << " > Address \t : " << p->info.address << endl;
 	cout << "======================================" << endl;
-	if (p->plane != NULL) {
-        cout << "\t-> Plane ID \t: " << p->plane->info.planeID << endl;
-        cout << "\t-> Type \t: " << p->plane->info.type << endl;
-        cout << "\t-> Route \t: " << p->plane->info.route << endl;
-        cout << "\t-> Price \t: " << p->plane->info.price << endl;
-        cout << "\t-> Capacity \t: " << p->plane->info.capacity << endl;
-	} else {
-        cout << "\n\t -- Tidak ada Pesanan --";
-	}
-	getch();
+
+    addressPlane pln;
+     bool found = false;
+    int i = 1;
+    pln = l.first;
+    addressRelasi2 q;
+    while (pln != NULL) {
+        q = pln->child.first;
+        while (q != NULL) {
+
+            if ( q->info->info.passengerID == p->info.passengerID) {
+                cout << "Pesanan " << i << endl;
+                cout << "--------------------------------------" << endl;
+                cout << " > Plane ID \t : " << pln->info.planeID << endl;
+                cout << " > Type \t : " << pln->info.type << endl;
+                cout << " > Route \t : " << pln->info.route << endl;
+                cout << " > Price \t : " << pln->info.price << endl;
+                cout << " > Capacity \t : " << pln->info.capacity << endl;
+                i++;
+                found = true;
+                break;
+            } else if ( q == NULL ) {
+                found = false;
+            }
+            q = q->next;
+        }
+        pln = pln->next;
+    }
+
+
+    if (!found)
+        cout << "\t -- Tidak ada pesanan -- " << endl;
+
+    getch();
 }
 
 void printInfoSchedules(schedules l) {
     addressSchedules p;
-    cout << endl;
-    cout << "=== Schedules Data ===" << endl;
+        system("CLS");
+        cout << "========================================" << endl;
+        cout <<	"=            Zero Reservation          =" << endl;
+        cout << "========================================" << endl;
+        cout << "===          Flight Schedules        ===" << endl;
     if (l.first != NULL) {
         p = l.first;
         int i = 1;
@@ -758,12 +1131,13 @@ void printInfoSchedules(schedules l) {
     }
 }
 
-
-
 void printInfoPlane(plane l){
     addressPlane p;
-    cout << endl;
-    cout << "=== Planes Data ===" << endl;
+        system("CLS");
+        cout << "========================================" << endl;
+        cout <<	"=            Zero Reservation          =" << endl;
+        cout << "========================================" << endl;
+        cout << "===            Planes Lists          ===" << endl;
     if (l.first != NULL) {
         p = l.first;
         int i = 1;
@@ -786,21 +1160,24 @@ void printInfoPlane(plane l){
 
 void printSch_Pln(schedules l) {
     addressSchedules p;
-    system("CLS");
-    cout << endl;
-    cout << "=== Schedules Data ===" << endl;
     if (l.first != NULL) {
         p = l.first;
         int i = 1;
+        system("CLS");
+        cout << endl;
+        cout << "========================================" << endl;
+        cout <<	"=            Zero Reservation          =" << endl;
+        cout << "========================================" << endl;
+        cout << "===         Schedules -- Plane       ===" << endl;
         while (p != NULL) {
             cout << endl;
-        	cout << "----------------------------" << endl;
+        	cout << "========================================" << endl;
             cout << "Schedules Data " << i << endl
                 << "ID \t: " << p->info.schID << endl
                 << "Date \t: " << p->info.date << endl;
 
              	if (p->child.first == NULL) {
-             		cout << " \n \t -- No Plane --" << endl;
+             		cout << " \n\t-- No Plane on "<< p->info.schID << " -- "  << endl;
             	 } else {
             		printInfoRelasi(p->child);
             	}
@@ -809,14 +1186,67 @@ void printSch_Pln(schedules l) {
             i++;
         }
     } else {
-        cout << "Data Jadwal tidak ada " << endl;
+        cout << "\t -- No Schedules List -- " << endl;
     }
+}
+void printPassangerandPlane(passenger l) {
+	addressPassenger p;
+	addressPlane q;
+
+
+	if ( l.first == NULL ){
+		cout << "-- No Passenger --" ;
+	} else {
+		p = l.first;
+        system("CLS");
+        cout << "========================================" << endl;
+        cout <<	"=            Zero Reservation          =" << endl;
+        cout << "========================================" << endl;
+	    cout << "===         Passenger -- Plane       ===" << endl;
+		while (p != NULL) {
+			cout << " > ID Passenger  : " << p->info.passengerID << endl;
+			cout << " > Nama \t : " << p->info.name << endl;
+			cout << " > Gender \t : " << p->info.gender << endl;
+			cout << " > Age \t\t : " << p->info.age << endl;
+			cout << " > Address \t : " << p->info.address << endl;
+			cout << "======================================" << endl;
+			q = p->plane;
+
+				if (q == NULL) {
+					cout << " -- No Plane on this passenger " << endl;
+				} else {
+
+					while ( q != NULL) {
+						cout << endl;
+			        	cout << "----------------------------" << endl;
+			            cout << "Planes Data " << endl
+			                 << "ID \t: " << q->info.planeID << endl
+			                << "Type \t: " << q->info.type << endl
+			                << "Route \t: " << q->info.route << endl
+			                << "Price \t: " << q->info.price << endl
+			                << "Capacity: " << q->info.capacity << endl;
+
+						q = q->next;
+					}
+
+
+				}
+
+
+            cout << endl;
+			p = p->next;
+		}
+	}
+
 }
 
 void printInfoPassenger(passenger l) {
     addressPassenger p;
-    cout << endl;
-    cout << "=== Passengers Data ===" << endl;
+        system("CLS");
+        cout << "========================================" << endl;
+        cout <<	"=            Zero Reservation          =" << endl;
+        cout << "========================================" << endl;
+        cout << "===           Passenger Lists        ===" << endl;
     if (l.first != NULL) {
         p = l.first;
         int i = 1;
@@ -849,53 +1279,56 @@ void printInfoRelasi(listRelasi l){
         	<< "\t ID \t: " << p->info->info.planeID << endl
             << "\t Type \t: " << p->info->info.type << endl
             << "\t Route \t: " << p->info->info.route << endl
+            << "\t Capacity  : " << p->info->info.capacity << endl
             << "\t Price \t: " << p->info->info.price << endl;
         p = p->next;
         i++;
     }
 }
+
+void printplane_passenger(plane l) {
+
+    int i = 1;
+    if (l.first == NULL) {
+        cout << " \t -- No Passenger List --" << endl;
+    } else {
+        addressPlane p = l.first;
+        //addressPassenger q;
+        system("CLS");
+        cout << endl;
+        cout << "========================================" << endl;
+        cout <<	"=            Zero Reservation          =" << endl;
+        cout << "========================================" << endl;
+        cout << "===         Plane -- Passenger       ===" << endl;
+        while (p != NULL) {
+            cout << endl;
+            cout << "========================================" << endl;
+            cout << "Planes Data " << i << endl
+                << "ID \t: " << p->info.planeID << endl
+                << "Type \t: " << p->info.type << endl
+                << "Route \t: " << p->info.route << endl
+                << "Price \t: " << p->info.price << endl
+                << "Capacity: " << p->info.capacity << endl;
+
+            if (p->child.first == NULL) {
+            	cout << "\n \t-- No Passenger on " << p->info.planeID << " --" << endl;
+            } else {
+
+            	printInfoRelasi2(p->child);
+            }
+            i++;
+            p = p->next;
+        }
+
+    }
+}
+
+
+
+
+
 /*=====  End of Print  ======*/
 
-
-/*----------  Relasi  ----------*/
-void addJadwaltoPlane(schedules &sch , plane &pln ) {
-        addressSchedules p;
-        addressPlane q;
-        addressRelasi r,s;
-
-        string idPlane , idSchedules;
-        char pilih;
-             system("CLS");
-       	cout << endl;
-		cout << "========================================" << endl;
-		cout <<	"=            Zero Reservation          =" << endl;
-		cout << "========================================" << endl;
-
-        do {
-            cout << "Input ID Jadwal \t:"; cin >> idSchedules;
-            cout << "Input ID Pesawat\t: "; cin >> idPlane;
-
-            p = findElmSchedules( sch , idSchedules);
-            if (p == NULL) {
-                cout << "ID Jadwal tidak ditemukan" << endl;
-            } else {
-                q = findElmPlane( pln , idPlane);
-                if (q == NULL) {
-                    cout << "ID Pesawat tidak ditemukan" << endl;
-                } else {
-                    r = alokasiRelasi(q);
-                    insertFirst(p->child , r);
-                    cout << "\nSuccess... ";
-                    cout << info(p).schID << " --- " << info(q).planeID << endl;
-                }
-
-                if (p == NULL && q == NULL)
-                	cout << "\nFailed...";
-            }
-           	cout << "Lakukan relasi data lagi ? (y/n) ";
-			cin >> pilih;
-        } while (pilih != 'n' && pilih != 'N');
-}
 
 /*----------  Menu  ----------*/
 
@@ -1024,8 +1457,9 @@ void menuAdmin(schedules &sch , plane &pln , passenger &pas) {
 	    cout << "========================================" << endl;
 		cout <<	"=            Zero Reservation          =" << endl;
 		cout << "========================================" << endl;
-	    cout << " Masukkan Username : "; cin >> username;
-	    cout << " Masukkan Password : "; cin >> password;
+		cout << "     -- Administration Login Page --  \n" << endl;
+	    cout << " Username : "; cin >> username;
+	    cout << " Password : "; cin >> password;
         }
 
 	    if (loginAdmin(username , password) || login){
@@ -1040,9 +1474,13 @@ void menuAdmin(schedules &sch , plane &pln , passenger &pas) {
 	            cout << " 2. Menghapus Data Jadwal Penerbangan, Pesawat, dan Passenger " << endl;
 	            cout << " 3. Mengubah Data Jadwal Penerbangan, Pesawat, dan Passenger" << endl;
 	            cout << " 4. Relasi Jadwal dengan Pesawat" << endl;
-	            cout << " 5. Melihat Jadwal , Pesawat , Passenger" << endl;
-	            cout << " 6. Melihat Jadwal -- Pesawat" << endl;
-	            cout << " 7. Melihat Pesawat -- Pessanger" << endl;
+	            cout << " 5. Hapus Relasi Jadwal dengan Pesawat" << endl;
+	            cout << " 6. Hapus Relasi Pesawat dengan Passenger" << endl;
+	            cout << " 7. Melihat Jadwal " << endl;
+	            cout << " 8. Melihat Pesawat" << endl;
+	            cout << " 9. Melihat Passenger" << endl;
+	            cout << " 10. Melihat Jadwal -- Pesawat" << endl;
+	            cout << " 11. Melihat Pesawat -- Pessanger" << endl;
 	            cout << " 99. Log Out" << endl;
 	            cout << "\nPilih Menu : " ;
 	            cin >> pilih;
@@ -1067,19 +1505,33 @@ void menuAdmin(schedules &sch , plane &pln , passenger &pas) {
 	                    addJadwaltoPlane(sch , pln);
 	                break;
 	                case 5 :
-	                	system("CLS");
+	                	deleteRelasibyID(sch);
+	                break;
+
+	                case 6 :
+                        deleteRelasi2byID(pln);
+	                break;
+
+	                case 7 :
 	                    printInfoSchedules(sch);
-	                    printInfoPlane(pln);
-	                    printInfoPassenger(pas);
-	                    //cout << "RELASI" << endl;
-	                    //printSch_Pln(sch);
 	                    getch();
 	                break;
-	                case 6 :
+
+	                case 8 :
+                        printInfoPlane(pln);
+	                    getch();
+                    break;
+
+                    case 9 :
+	                    printInfoPassenger(pas);
+	                    getch();
+                    break ;
+
+	                case 10 :
 	                	printSch_Pln(sch);
 	                	getch();
 	                break;
-	                case 7 :
+	                case 11 :
 	                	printplane_passenger(pln);
 	                	getch();
 	                break;
@@ -1106,27 +1558,28 @@ void menuPassanger(schedules &sch , plane &pln , passenger &pas) {
     addressPassenger p;
 
     system("CLS");
-    cout << endl;
     cout << "========================================" << endl;
 	cout <<	"=            Zero Reservation          =" << endl;
 	cout << "========================================" << endl;
-    cout << "Masukkan Passenger ID \t: "; cin >> ID;
-    cout << "Masukkan Username \t: "; cin >> username;
-    cout << "Masukkan Password \t: "; cin >> password;
+	cout << "        -- Passenger Login Page --   \n " << endl;
+    cout << " Passenger ID : "; cin >> ID;
+    cout << " Username     : "; cin >> username;
+    cout << " Password     : "; cin >> password;
 
     if (loginPassanger(pas , ID ,username , password)) {
         p = findElmPassenger(pas , ID);
         do {
             pilihbalik:
             system("CLS");
-            cout << "Selamat Datang - " << username << endl;
+            cout << "Welcome - " << p->info.name << endl;
             cout << "========================================" << endl;
         	cout <<	"=            Zero Reservation          =" << endl;
         	cout << "========================================" << endl;
             cout << " 1. Memesan Penerbangan" << endl;
             cout << " 2. Melihat Pemesanan " << endl;
             cout << " 3. Membatalkan Pemesanan " << endl;
-            cout << " 4. Edit Profile" << endl;
+            cout << " 4. Melihat Jadwal Penerbangan & Maskapai" << endl;
+            cout << " 5. Edit Profile" << endl;
             cout << " 99. Back" << endl;
             cout << "\nPilih Menu : " ;
             cin >> pilih;
@@ -1143,16 +1596,24 @@ void menuPassanger(schedules &sch , plane &pln , passenger &pas) {
                 switch (pilih) {
                 case 1 :
                     system("CLS");
-                    addpassto_plane(pln , p);
+                    pesanPenerbangan(pln , p);
                 break;
                 case 2 :
-                    printPesanan(pas , p);
+                    printPesanan(pln , p);
                 break;
                 case 3 :
-                    disconnect(p);
+                    pembatalan(pln , p);
                 break;
                 case 4 :
+                	printSch_Pln(sch);
+                	getch();
                 break;
+                case 5 :
+                	editProfile(pas, p);
+                	getch();
+                break;
+
+
                 case 99 :
 
                 break;
@@ -1181,8 +1642,15 @@ void mainMenu(schedules &sch, plane &pln , passenger &pas) {
         cout << "========================================" << endl;
     	cout <<	"=            Zero Reservation          =" << endl;
     	cout << "========================================" << endl;
-        cout << " 1. ADMIN" << endl;
-        cout << " 2. Passangers " << endl;
+    	cout << currentDateTime() << endl;
+    	cout << "----------------------------------------" << endl;
+    	cout << "              -- Summary -- " << endl;
+    	cout << "----------------------------------------" << endl;
+    	cout << "Jadwal : " << countSchedules(sch) << " || Pesawat : "
+    		 << countPlane(pln) << " || Passenger " << countPassenger(pas) << endl;
+    	cout << "----------------------------------------" << endl;
+        cout << " 1. Administration " << endl;
+        cout << " 2. Passengers " << endl;
         cout << " 99. Exit" << endl;
         cout << "\nPilih Menu : " ;
         cin >> pilih;
@@ -1261,15 +1729,6 @@ void menuTambah(schedules &sch, plane &pln , passenger &pas){
 
         }
 }
-
-/*----------  Exception Handler  ----------*/
-bool is_number(const std::string& s)
-{
-    std::string::const_iterator it = s.begin();
-    while (it != s.end() && std::isdigit(*it)) ++it;
-    return !s.empty() && it == s.end();
-}
-
 
 
 /*============================
@@ -1449,6 +1908,74 @@ void editPassenger(passenger &l){
 	} while ( pilih != 'n' && pilih != 'N');
 
 }
+
+
+void editProfile(passenger &l , addressPassenger p) {
+		system("CLS");
+		cout << endl;
+		cout << "========================================" << endl;
+	    cout <<	"=            Zero Reservation          =" << endl;
+	    cout << "========================================" << endl;
+	    char pilih;
+	    balikawal:
+	    cout << "1. Mengubah Identitas " << endl
+	    	<<	"2. Mengubah Password "	<< endl
+	    	<< 	"Pilih Menu ..." << endl;
+
+	    cin >> pilih;
+
+	    switch (pilih) {
+        case '1' :
+					cout << " Masukkan Nama baru : ";
+                    cin >> p->info.name;
+                    pilihbalik:
+                    cout << "Masukkan Umur baru : " ;
+                    cin >> p->info.age;
+                        if (cin.fail()) {
+                            cin.clear();
+                            cin.ignore();
+                            cout << "Tipe data umur salah, masukkan angka" << endl;
+                            goto pilihbalik;
+                        }
+                    cout << "Masukkan Gender baru : ";
+                    cin >> p->info.gender;
+                    cout << "Masukkan Address baru : ";
+                    cin >> p->info.address;
+
+                    cout << "\n --- Profile already update .... ---";
+                    break;
+        case '2' :
+             		cout << "Masukkan Username Lama : " << endl;
+                    string username;
+                    cin >> username;
+                    cout << "Masukkan Password Lama : " << endl;
+                    string password;
+                    cin >> password;
+                    bool cocok;
+
+                    if (password == p->info.password && username == p->info.username){
+                        cout << " > Masukkan username baru : ";
+                        cin >> p->info.username;
+                        cout << " > Masukkan password baru : ";
+                        cin >> p->info.password;
+                        cocok = true;
+                    } else
+                        cocok = false;
+
+                    if (cocok)
+                        cout << " -- Success... Username & Password are update... --" << endl;
+                    else {
+                        cout << " -- Failed... Incorrect username or password... --" << endl;
+                       	goto balikawal;
+        			}
+        break;
+        }
+}
+
+
+
+
+
 /*=====  End of Edit  ======*/
 
 
@@ -1494,190 +2021,117 @@ bool checkPassengerID(passenger l , string ID) {
 		return true;
 }
 
+bool checkRelasi2(listRelasi2 l , string ID){
+	addressRelasi2 q;
+
+	q = findElmRelasi2( l , ID);
+
+	if ( q == NULL)
+        return false;
+	else
+        return true;
+}
+
 /*=====  End of Check Element  ======*/
 
-void addPesanan(plane &pln , addressPlane p) {
-    cout << "========================================" << endl;
+
+/*----------  Date  ----------*/
+const string currentDateTime() {
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+
+    strftime(buf, sizeof(buf), "Date : %d-%m-%Y - Local Time : %X", &tstruct);
+
+    return buf;
+}
+
+
+void pembatalan(plane &l , addressPassenger q) {
+
+    string id;
+    system("CLS");
+	cout << endl;
+	cout << "========================================" << endl;
 	cout <<	"=            Zero Reservation          =" << endl;
 	cout << "========================================" << endl;
+    cout << "Masukkan ID Pesawat yang ingin dibatalkan : "; cin >> id;
 
-    cout << " -> Pilih ID Pesawat pada Jadwal yang tertera " << endl;
-}
+    addressPlane p = findElmPlane( l , id);
 
-
-void addPassengertoPlane(plane &pln , addressPassenger &pas ) {
-	addressPlane p;
-	string planeID ;
-	char pilih;
-
-	cout << "========================================" << endl;
-	cout <<	"=            Zero Reservation          =" << endl;
-	cout << "========================================" << endl;
-
-	pilihID:
-
-	cout << "Masukkan ID Pesawat : " ;
-	cin >> planeID;
-
-		p = findElmPlane(pln , planeID);
-
-		if ( p == NULL) {
-			cout << " -- ID Pesawat tidak ditemukan --" << endl;
-			goto pilihID;
-		}
-
-    connect( p , pas);
-    connectPlanetoPas( p , pas);
-
-	cout << "\nSuccess... ";
-	cout << p->info.planeID << " -- " << pas->info.passengerID << endl;
-	cout << " Pesanan Berhasil...";
-	getch();
-}
-
-void connect(addressPlane p , addressPassenger q){
-	q->plane = p;
-}
-
-void connectPlanetoPas(addressPlane p , addressPassenger q) {
-	p->pass = q;
-}
-
-void disconnect(addressPassenger p) {
-	p->plane = NULL;
-}
-
-
-void printPassangerandPlane(passenger l) {
-	addressPassenger p;
-	addressPlane q;
-
-
-	if ( l.first == NULL ){
-		cout << "-- No Passenger --" ;
-	} else {
-		p = l.first;
-		cout << " == Passanger Data ==" << endl;
-		while (p != NULL) {
-			cout << " > ID Passenger  : " << p->info.passengerID << endl;
-			cout << " > Nama \t : " << p->info.name << endl;
-			cout << " > Gender \t : " << p->info.gender << endl;
-			cout << " > Age \t\t : " << p->info.age << endl;
-			cout << " > Address \t : " << p->info.address << endl;
-			cout << "======================================" << endl;
-			q = p->plane;
-
-				if (q == NULL) {
-					cout << " -- No Plane on this passenger " << endl;
-				} else {
-
-					while ( q != NULL) {
-						cout << endl;
-			        	cout << "----------------------------" << endl;
-			            cout << "Planes Data " << endl
-			                 << "ID \t: " << q->info.planeID << endl
-			                << "Type \t: " << q->info.type << endl
-			                << "Route \t: " << q->info.route << endl
-			                << "Price \t: " << q->info.price << endl
-			                << "Capacity: " << q->info.capacity << endl;
-
-						q = q->next;
-					}
-
-
-				}
-
-
-            cout << endl;
-			p = p->next;
-		}
-	}
-
-}
-
-void printplane_passenger(plane l) {
-
-
-    if (l.first == NULL) {
-        cout << " -- List Pesawat Kosong --" << endl;
+    if (p == NULL) {
+        cout << " -- Pesawat tidak ditemukan --" << endl;
     } else {
-        addressPlane p = l.first;
-        addressPassenger q;
-        while (p != NULL) {
-            cout << endl;
-            cout << "===========================" << endl;
-            cout << "Planes Data " << endl
-                << "ID \t: " << p->info.planeID << endl
-                << "Type \t: " << p->info.type << endl
-                << "Route \t: " << p->info.route << endl
-                << "Price \t: " << p->info.price << endl
-                << "Capacity: " << p->info.capacity << endl;
+        addressRelasi2 r = p->child.first;
 
-            if (p->child.first == NULL) {
-            	cout << "\n \t-- No Passenger on " << p->info.planeID << " --" << endl;
-            } else {
+            if (r->info->info.passengerID == q->info.passengerID ) {
+                cout << p->info.planeID;
+                p->info.capacity++;
+                if (r->next == NULL) {
+                    p->child.first= NULL;
 
-            	printInfoRelasi2(p->child);
-            }
+                } else {
+                    if (r == p->child.first && r->next != NULL ){
+                        deleteFirstR2(p->child);
+                    } else if (next(r) == NULL) {
+                        deleteLastR2(p->child);
+                    }
+                    else {
+                        addressRelasi2 q = p->child.first;
 
-            p = p->next;
+                        while (q->next != r) {
+                            q = q->next;
+                        }
+                        q->next = r->next;
+                        r->next = NULL;
+                        delete r;
+                    }
+                }
+                cout << " Berhasil dibatalkan..." << endl;
+        } else {
+            cout << "-- Failed...," << p->info.planeID << " not match to any order " << endl;
         }
-
     }
+    getch();
 }
 
 
-void addpassto_plane(plane &l , addressPassenger psgr) {
-       	cout << endl;
-		cout << "========================================" << endl;
-		cout <<	"=            Zero Reservation          =" << endl;
-		cout << "========================================" << endl;
+int countSchedules(schedules l){
+	addressSchedules p;
+	int i = 0;
+	p = l.first;
 
-		if (l.first == NULL) {
-			cout << " -- no plane --" << endl;
-		} else {
-			string ID;
-			cout << " Masukan ID Pesawat yang ingin dipesan : " << endl;
-			cin >> ID;
-
-			addressPlane p = findElmPlane( l , ID);
-
-			if (p == NULL) {
-				cout << " -- Pesawat tidak ditemukan --" << endl;
-			} else {
-				addressRelasi2 r;
-				r = alokasiRelasi2(psgr);
-
-				insertFirstR2(p->child , r);
-
-				cout << " -- Success.. " << endl;
-				cout <<"Selamat.. " << psgr->info.name << ", Pesawat dengan ID " << p->info.planeID << " berhasil dipesan " << endl;
-				getch();
-			}
-		}
-}
-
-
-void printInfoRelasi2(listRelasi2 l){
-	addressRelasi2 p = l.first;
-	cout << " \t -- Passenger --" << endl;
-	int i = 1;
-
-	while ( p != NULL) {
-			cout << endl;
-        	cout << "----------------------------" << endl;
-            cout << " \t Passanger Data " << i << endl
-                << "\t > ID      : " << p->info->info.passengerID << endl
-                << "\t > Name    : " << p->info->info.name << endl
-                << "\t > Age     : " << p->info->info.age << endl
-                << "\t > Gender  : " << p->info->info.gender << endl
-                << "\t > Address : " << p->info->info.address << endl;
-            p = p->next;
-            i++;
-
+	while (p!= NULL) {
+		i++;
+		p = p->next;
 	}
 
+	return i;
 }
 
+int countPlane(plane l) {
+	addressPlane p;
+	int i = 0;
+	p = l.first;
 
+	while (p!= NULL) {
+		i++;
+		p = p->next;
+	}
 
+	return i;
+}
+
+int countPassenger(passenger l) {
+	addressPassenger p;
+		int i = 0;
+	p = l.first;
+
+	while (p!= NULL) {
+		i++;
+		p = p->next;
+	}
+
+	return i;
+}

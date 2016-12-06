@@ -21,6 +21,7 @@
  #include <string.h>
  #include <windows.h>
  #include <conio.h>
+ #include <ctime>
 
 #define next(p) p->next
 #define prev(p) p->prev
@@ -203,7 +204,15 @@ void deletePlanebyID(plane &l);
 void deleteFirstPas(passenger &l);
 void deleteLastPas(passenger &l);
 void deletePasbyID(passenger &l);
+/*----------  relasi  ----------*/
+void deleteFirstRelasi(listRelasi &l);
+void deleteLastRelasi(listRelasi &l);
+void deleteRelasibyID(schedules &l);
+void deleteFirstR2(listRelasi2 &l);
+void deleteLastR2(listRelasi2 &l);
+void deleteRelasi2byID(plane &l);
 
+void pembatalan(plane &l , addressPassenger q);
 /*=====  End of Delete  ======*/
 
 
@@ -213,6 +222,7 @@ void deletePasbyID(passenger &l);
 void editSchedules(schedules &l);
 void editPlane(plane &l);
 void editPassenger(passenger &l);
+void editProfile(passenger &l , addressPassenger p);
 /*=====  End of Edit  ======*/
 
 
@@ -223,7 +233,7 @@ addressPlane findElmPlane(plane l , string planeID);
 addressSchedules findElmSchedules(schedules l, string schID);
 addressPassenger findElmPassenger(passenger l , string passengerID);
 addressRelasi findElmRelasi(listRelasi l , string planeID);
-
+addressRelasi2 findElmRelasi2(listRelasi2 l , string passID);
 
 /*=====  End of Find & Searching  ======*/
 
@@ -237,11 +247,11 @@ void printInfoPassenger(passenger l);
 void printAll(schedules l);
 void printSemua(schedules l);
 void printSch_Pln(schedules l);
-void printPesanan(passenger l , addressPassenger p);
-void printPassangerandPlane(passenger l);
-void printplane_passenger(plane l);
+void printPesanan(plane l , addressPassenger p);
 void printInfoRelasi(listRelasi l);
+void printplane_passenger(plane l);
 void printInfoRelasi2(listRelasi2 l);
+
 
 /*=====  End of Print  ======*/
 
@@ -255,31 +265,27 @@ void menuHapus(schedules &sch , plane &pln , passenger &pas);
 void menuEdit(schedules &sch , plane &pln , passenger &pas);
 void pesanPenerbangan(schedules &sch , plane &pln , passenger &pas);
 
-/*----------  Exception Handler  ----------*/
-bool is_number(const std::string& s);
-
 /*----------  check no element  ----------*/
 bool checkPlaneID(plane l , string ID);
 bool checkSchedulesID(schedules l , string ID);
 bool checkPassengerID(passenger l , string ID);
-
-/*================================
-=            #connect            =
-================================*/
-
-void connect(addressPlane p , addressPassenger q);
-void connectPlanetoPas(addressPlane p , addressPassenger q);
-void disconnect(addressPassenger p);
-
-/*=====  End of #connect  ======*/
-
+bool checkRelasi2(listRelasi2 l , string ID);
 /*================================
 =            #addpass            =
 ================================*/
 
-void addpassto_plane(plane &l , addressPassenger psgr);
-
+void pesanPenerbangan(plane &l , addressPassenger psgr);
+const string currentDateTime();
 /*=====  End of #addpass  ======*/
+
+/*==============================
+=            #COunt            =
+==============================*/
+int countSchedules(schedules l);
+int countPlane(plane l);
+int countPassenger(passenger l);
+
+/*=====  End of #COunt  ======*/
 
 
 #endif // ZERORESERVATION_H_INCLUDED
