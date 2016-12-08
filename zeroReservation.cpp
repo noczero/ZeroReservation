@@ -58,8 +58,6 @@ addressPassenger alokasiPassenger(dataPassenger x){
 	p = new elmPassenger;
 	p->info = x;
 	p->next = NULL;
-	p->plane = NULL;
-
 	return p;
 }
 
@@ -139,14 +137,14 @@ void insertFirstSch(schedules &l , addressSchedules p){
 
 
 void insertLastSch(schedules &l , addressSchedules p){
-	if (l.first == NULL) {
-		l.first = p;
-		l.last = p;
-	} else {
-		p->prev = l.last;
-		l.last->next = p;
-		l.last = p;
-	}
+    if (l.first == NULL ){
+        l.first = p;
+        l.last = p;
+    } else {
+        p->prev = l.last;
+        l.last->next = p;
+        l.last = p;
+    }
 }
 
 /*----------  Plane  ----------*/
@@ -214,9 +212,8 @@ void insertFirstPlane(plane &l , addressPlane p){
         l.last = p;
     } else {
         p->next = l.first;
-
+        l.first->prev = p;
         l.first = p;
-          l.first->prev = p;
     }
 }
 
@@ -312,6 +309,7 @@ void insertFirst(listRelasi &l, addressRelasi p){
          l.first->prev = p;
     }
 }
+
 void insertLast(listRelasi &l, addressRelasi p){
 	if (l.first == NULL) {
 		l.first = p;
@@ -404,28 +402,28 @@ void pesanPenerbangan(plane &l , addressPassenger psgr) {
 			// 	getch();
 			// }
 				addressPlane p = findElmPlane( l , ID);
-
-			cout << checkRelasi2(p->child , ID);
-			if (checkRelasi2(p->child, ID)) {
-				cout << " -- Anda sudah memesan " << p->info.planeID << " -- "<< endl;
-
-			} else {
 				if (p == NULL) {
 					cout << " -- Pesawat tidak ditemukan --" << endl;
-					getch();
 				} else {
+
+					//cout << checkRelasi(p , ID);
+					if (checkRelasi2(p->child, psgr->info.passengerID)) {
+					cout << " -- Anda sudah memesan " << p->info.planeID << " -- "<< endl;
+					} else {
+
 					addressRelasi2 r;
 					r = alokasiRelasi2(psgr);
 
 					p->info.capacity--;
 					insertFirstR2(p->child , r);
 
-					cout << " -- Success.. " << endl;
+					cout << " -- Success.. \n " << endl;
 					cout <<"Selamat.. " << psgr->info.name << ", Pesawat dengan ID " << p->info.planeID << " berhasil dipesan " << endl;
-					getch();
+
 				}
 			}
 		}
+		getch();
 }
 
 /*=====  End of add  ======*/
@@ -689,6 +687,7 @@ void deleteFirstRelasi(listRelasi &l) {
             prev(next(p)) = NULL;
             first(l) = next(p);
             next(p) = NULL;
+
             delete p;
         }
     }
@@ -745,7 +744,7 @@ void deleteLastR2(listRelasi2 &l) {
     }
 }
 
-void deleteSchMain(schedules &l);
+
 /*----------  plane  ----------*/
 void deleteFirstPlane(plane &l){
   addressPlane p;
@@ -823,7 +822,7 @@ void deletePlanebyID(plane &l){
                 } else {
                      if (p == first(l) && next(p) != NULL ){
                         deleteFirstPlane(l);
-                    } else if (next(p) == l.last) {
+                    } else if (next(p) == NULL && prev(p) != NULL) {
                         deleteLastPlane(l);
                     } else {
                         addressPlane q = p->prev;
@@ -962,6 +961,25 @@ addressSchedules findElmSchedules(schedules l, string schID){
         while ( p != NULL && info(p).schID != schID) {
             p = next(p);
         }
+        if (p == NULL) {
+            return NULL;
+        } else {
+            return p;
+        }
+    }
+}
+
+addressPlane findTypePlane(plane l , dataPlane x) {
+    addressPlane p ;
+    if (l.first == NULL) {
+        return NULL;
+    } else {
+        p = l.first;
+
+        while (p!= NULL && p->info.type != x.type){
+            p = next(p);
+        }
+
         if (p == NULL) {
             return NULL;
         } else {
@@ -1150,6 +1168,7 @@ void printInfoPlane(plane l){
                 << "Route \t: " << p->info.route << endl
                 << "Price \t: " << p->info.price << endl
                 << "Capacity: " << p->info.capacity << endl;
+
             p = p->next;
             i++;
         }
@@ -1188,56 +1207,6 @@ void printSch_Pln(schedules l) {
     } else {
         cout << "\t -- No Schedules List -- " << endl;
     }
-}
-void printPassangerandPlane(passenger l) {
-	addressPassenger p;
-	addressPlane q;
-
-
-	if ( l.first == NULL ){
-		cout << "-- No Passenger --" ;
-	} else {
-		p = l.first;
-        system("CLS");
-        cout << "========================================" << endl;
-        cout <<	"=            Zero Reservation          =" << endl;
-        cout << "========================================" << endl;
-	    cout << "===         Passenger -- Plane       ===" << endl;
-		while (p != NULL) {
-			cout << " > ID Passenger  : " << p->info.passengerID << endl;
-			cout << " > Nama \t : " << p->info.name << endl;
-			cout << " > Gender \t : " << p->info.gender << endl;
-			cout << " > Age \t\t : " << p->info.age << endl;
-			cout << " > Address \t : " << p->info.address << endl;
-			cout << "======================================" << endl;
-			q = p->plane;
-
-				if (q == NULL) {
-					cout << " -- No Plane on this passenger " << endl;
-				} else {
-
-					while ( q != NULL) {
-						cout << endl;
-			        	cout << "----------------------------" << endl;
-			            cout << "Planes Data " << endl
-			                 << "ID \t: " << q->info.planeID << endl
-			                << "Type \t: " << q->info.type << endl
-			                << "Route \t: " << q->info.route << endl
-			                << "Price \t: " << q->info.price << endl
-			                << "Capacity: " << q->info.capacity << endl;
-
-						q = q->next;
-					}
-
-
-				}
-
-
-            cout << endl;
-			p = p->next;
-		}
-	}
-
 }
 
 void printInfoPassenger(passenger l) {
@@ -1766,6 +1735,8 @@ char pilih ;
              }
 			cout << " Masukkan Tanggal baru : ";
 			cin >> x.date;
+            p->info.schID = x.schID;
+            p->info.date = x.date;
 		}
 
 
@@ -1926,6 +1897,11 @@ void editProfile(passenger &l , addressPassenger p) {
 
 	    switch (pilih) {
         case '1' :
+                    system("CLS");
+                    cout << endl;
+                    cout << "========================================" << endl;
+                    cout <<	"=            Zero Reservation          =" << endl;
+                    cout << "========================================" << endl;
 					cout << " Masukkan Nama baru : ";
                     cin >> p->info.name;
                     pilihbalik:
@@ -1945,6 +1921,11 @@ void editProfile(passenger &l , addressPassenger p) {
                     cout << "\n --- Profile already update .... ---";
                     break;
         case '2' :
+                     system("CLS");
+                    cout << endl;
+                    cout << "========================================" << endl;
+                    cout <<	"=            Zero Reservation          =" << endl;
+                    cout << "========================================" << endl;
              		cout << "Masukkan Username Lama : " << endl;
                     string username;
                     cin >> username;
@@ -2031,6 +2012,19 @@ bool checkRelasi2(listRelasi2 l , string ID){
 	else
         return true;
 }
+
+bool checkRelasi(listRelasi l , string ID){
+	addressRelasi q;
+
+	q = findElmRelasi( l , ID);
+
+	if ( q == NULL)
+        return false;
+	else
+		return true;
+}
+
+
 
 /*=====  End of Check Element  ======*/
 

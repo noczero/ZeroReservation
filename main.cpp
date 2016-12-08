@@ -59,7 +59,7 @@ int main()
     y.price = 123456;
     y.capacity = 150;
     pln = alokasiPlane(y);
-    insertLastPlane(planeList , pln);
+    insertFirstPlane(planeList , pln);
 
     y.planeID = "GA-03";
     y.type = "A-737";
@@ -111,6 +111,9 @@ int main()
     z.address = "Bandung";
     psgr = alokasiPassenger(z);
     insertFirstPas(passengerList , psgr);
+
+
+
 
     mainMenu(schList , planeList , passengerList);
 

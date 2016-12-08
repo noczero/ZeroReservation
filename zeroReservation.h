@@ -104,17 +104,15 @@ struct elmSchedules
 struct elmPlane
 {
 	dataPlane info;
-	addressPassenger pass;
-	listRelasi2 child;
 	addressPlane next;
 	addressPlane prev;
+	listRelasi2 child;
 };
 
 struct elmPassenger
 {
 	dataPassenger info;
 	addressPassenger next;
-	addressPlane plane;
 };
 
 struct elmListRelasi {
@@ -234,7 +232,7 @@ addressSchedules findElmSchedules(schedules l, string schID);
 addressPassenger findElmPassenger(passenger l , string passengerID);
 addressRelasi findElmRelasi(listRelasi l , string planeID);
 addressRelasi2 findElmRelasi2(listRelasi2 l , string passID);
-
+addressPlane findTypePlane(plane l , dataPlane x);
 /*=====  End of Find & Searching  ======*/
 
 /*=============================
@@ -270,6 +268,7 @@ bool checkPlaneID(plane l , string ID);
 bool checkSchedulesID(schedules l , string ID);
 bool checkPassengerID(passenger l , string ID);
 bool checkRelasi2(listRelasi2 l , string ID);
+bool checkRelasi(listRelasi l , string ID);
 /*================================
 =            #addpass            =
 ================================*/
